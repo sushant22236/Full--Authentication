@@ -1,6 +1,9 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model.js';
+import userModel from '../model/user.model.js';
+import { transport } from '../utils/sentEmail.js';
+import { config } from '../config/env.js';
+import User from '../model/user.model.js';
 
 
 export const registerUser = async (req, res) => {
@@ -11,7 +14,7 @@ export const registerUser = async (req, res) => {
     }
 
     try{
-        const existingUser = await User.findOne({email});
+        const existingUser = await userModel.findOne({email});
 
         if(existingUser){
             return res.status(409).json({success: false, message: "User already exists"});
@@ -19,7 +22,7 @@ export const registerUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({
+        const newUser = new userModel({
             name,
             email,
             password: hashedPassword
@@ -39,6 +42,17 @@ export const registerUser = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production"  ? "none" : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         })
+
+        // send welcome email
+        const mailOptions = {
+            from: config.smtpApi.senderEmail,
+            to: newUser.email,
+            subject: "Welcome to sushant singh App",
+            text: `Hello ${newUser.name}, thanku for registering on our app.`
+        }
+
+        await transport.sendMail(mailOptions);
+
         return res.status(201).json({success: true, message: "User registered successfully"});
 
         
@@ -56,7 +70,7 @@ export const loginUser = async (req, res) => {
     }
 
     try{
-        const user = await User.findOne({email});
+        const user = await userModel.findOne({email});
 
         if(!user){
             return res.status(401).json({success: false, message: "Invalid email or password"})
