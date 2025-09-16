@@ -8,6 +8,11 @@ export const sendOtpVerifyEmail = async (req, res) => {
         const {userId} = req.body;
 
         const user = await userModel.findById(userId);
+        console.log(user);
+
+        if(!user){
+            return res.status(404).json({success: false, message: "User not found"});
+        }
 
         if(user.isAccountVerified){
             return res.status(200).json({success: true, message: "Account already verified"});
@@ -27,6 +32,7 @@ export const sendOtpVerifyEmail = async (req, res) => {
             text: `Hello ${user.name}, your otp for email verification is ${otp}. It will expire in 10 minutes.`
         }
 
+        console.log(mailOptions);
         await transport.sendMail(mailOptions);
 
         return res.status(200).json({success: true, message: "verification OTP sent to your email",})

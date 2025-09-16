@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import userModel from '../model/user.model.js';
 import { transport } from '../utils/sentEmail.js';
 import { config } from '../config/env.js';
-import User from '../model/user.model.js';
 
 
 export const registerUser = async (req, res) => {
