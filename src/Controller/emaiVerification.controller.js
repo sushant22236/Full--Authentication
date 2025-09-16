@@ -2,6 +2,7 @@ import userModel from '../model/user.model.js';
 import { transport } from '../utils/sentEmail.js';
 import { config } from '../config/env.js';
 
+// new function to send otp for email verification
 export const sendOtpVerifyEmail = async (req, res) => {
 
     try{
@@ -43,6 +44,8 @@ export const sendOtpVerifyEmail = async (req, res) => {
     }
 }
 
+// new function to verify email
+
 export const verifyEmail = async (req, res) => {
 
     const {otp} = req.body;
@@ -76,5 +79,14 @@ export const verifyEmail = async (req, res) => {
 
     }catch(error){
         return res.status(400).json({success: false, message: "Error verifying email", error: error.message});
+    }
+}
+
+// new function to check if user is authenticated
+export const isAuthenticated = async (req, res) => {
+    try{
+        return res.status(200).json({success: true, message: "User is authenticated"});
+    }catch(error){
+        return res.status(400).json({success: false, message: "Error in authentication", error: error.message});
     }
 }
