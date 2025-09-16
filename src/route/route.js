@@ -10,7 +10,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutuser);
 router.post('/send-otp', userAuth, sendOtpVerifyEmail);
-router.post('/verify-email', verifyEmail);
+router.post('/verify-email', userAuth, verifyEmail);
 
 
 export default router;

@@ -5,7 +5,7 @@ import { config } from '../config/env.js';
 export const sendOtpVerifyEmail = async (req, res) => {
 
     try{
-        const {userId} = req.body;
+        const userId = req.userId;
 
         const user = await userModel.findById(userId);
         console.log(user);
@@ -45,7 +45,8 @@ export const sendOtpVerifyEmail = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
 
-    const {userId, otp} = req.body;
+    const {otp} = req.body;
+    const userId = req.userId;
 
     if(!userId || !otp){
         return res.status(400).json({success: false, message: "All fields are required"})
